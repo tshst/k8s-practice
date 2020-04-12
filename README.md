@@ -103,3 +103,31 @@ master   Ready    master   7h40m   v1.18.1   192.168.100.10   <none>        Ubun
 node1    Ready    <none>   41m     v1.18.1   192.168.100.11   <none>        Ubuntu 19.10   5.3.0-42-generic   docker://19.3.8
 node2    Ready    <none>   2m40s   v1.18.1   192.168.100.12   <none>        Ubuntu 19.10   5.3.0-42-generic   docker://19.3.8
 ```
+
+## Create Kubernetes Dashboard
+- refs: https://github.com/kubernetes/dashboard
+
+```
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-rc7/aio/deploy/recommended.yaml
+$ kubectl proxy
+```
+
+- create account
+    - https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
+
+```
+$ cd k8s-practice/config
+$ kubectl apply -f kubernetes-dashboard-create-user.yml
+```
+
+- get token
+
+```
+kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
+```
+
+- login to Kubernetes Dashboard
+
+```
+http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+```

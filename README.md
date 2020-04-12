@@ -51,6 +51,7 @@ $ vagrant.exe ssh-config >> ssh-config
 $ scp -F ssh-config vagrant@default:~/.kube/config .
 $ mkdir -p $HOME/.kube
 $ sudo cp -i ./config $HOME/.kube/config
+$ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 $ kubectl get node
 NAME     STATUS     ROLES    AGE   VERSION
 master   NotReady   master   24m   v1.18.1
@@ -69,7 +70,36 @@ master   Ready    master   111m   v1.18.1
 ```
 
 ## Next step is create worker node1
+
+```
 $ cd k8s-practice/node1 && vagrant up
+$ vagrant ssh
+$ sudo kubeadm join 192.168.100.10:6443 --token tftn6v.l2lk120fptpvn2l1 --discovery-token-ca-cert-hash sha256:4ca2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+$ exit
+$ kubectl get node -o wide
+NAME     STATUS   ROLES    AGE     VERSION   INTERNAL-IP      EXTERNAL-IP   OS-IMAGE       KERNEL-VERSION     CONTAINER-RUNTIME
+master   Ready    master   7h1m    v1.18.1   192.168.100.10   <none>        Ubuntu 19.10   5.3.0-42-generic   docker://19.3.8
+node1    Ready    <none>   2m41s   v1.18.1   192.168.100.11   <none>        Ubuntu 19.10   5.3.0-42-generic   docker://19.3.8
+```
+
+- if you forgot discovery-token or you could'nt use discovery-token(token available 24 hours)
+
+```
+$ cd k8s-practice/master && vagrant ssh
+$ kubeadm token create --print-join-command
+```
 
 ## Next step is create worker node2
 $ cd k8s-practice/node2 && vagrant up
+
+```
+$ cd k8s-practice/node2 && vagrant up
+$ vagrant ssh
+$ sudo kubeadm join 192.168.100.10:6443 --token tftn6v.l2lk120fptpvn2l1 --discovery-token-ca-cert-hash sha256:4ca2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+$ exit
+$ kubectl get node -o wide
+NAME     STATUS   ROLES    AGE     VERSION   INTERNAL-IP      EXTERNAL-IP   OS-IMAGE       KERNEL-VERSION     CONTAINER-RUNTIME
+master   Ready    master   7h40m   v1.18.1   192.168.100.10   <none>        Ubuntu 19.10   5.3.0-42-generic   docker://19.3.8
+node1    Ready    <none>   41m     v1.18.1   192.168.100.11   <none>        Ubuntu 19.10   5.3.0-42-generic   docker://19.3.8
+node2    Ready    <none>   2m40s   v1.18.1   192.168.100.12   <none>        Ubuntu 19.10   5.3.0-42-generic   docker://19.3.8
+```

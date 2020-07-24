@@ -11,8 +11,8 @@
 
 
 ## First, create master node cluster
-$ git clone "this repository"
-$ cd k8s-practice/master && vagrant up
+- ```$ git clone "this repository"```
+- ```$ cd k8s-practice/master && vagrant up```
 
 ```
     default: Your Kubernetes control-plane has initialized successfully!
